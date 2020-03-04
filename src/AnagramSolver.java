@@ -4,12 +4,24 @@ public class AnagramSolver {
 
     private List<String> dictionary;
 
-    private List<String> answers;
+    private Stack<String> answers;
+
+    private Set<String> prunedDict;
+
+    private Map<String, LetterInventory> words;
 
     public AnagramSolver(List<String> list) {
 
         this.dictionary = list;
-        this.answers = new ArrayList<>();
+        this.answers = new Stack<>();
+        this.prunedDict = new TreeSet<>();
+        this.words = new HashMap<>();
+
+        for (String word : this.dictionary) {
+
+            this.words.put(word, new LetterInventory(word));
+
+        }
 
     }
 
@@ -21,29 +33,58 @@ public class AnagramSolver {
 
         }
 
+        LetterInventory input = new LetterInventory(s);
+
+        for (String word : this.dictionary) {
+
+            if (input.subtract(this.words.get(word)) != null) {
+
+                this.prunedDict.add(word);
+
+            }
+
+        }
+
         explore(s, max);
+        this.prunedDict.clear();
 
     }
 
-    private void explore(String s, int num) {
+    private void explore(String s, int max) {
 
-        LetterInventory current = new LetterInventory(s);
+        LetterInventory current;
 
-        if (current.isEmpty()) {
+        if (this.words.containsKey(s)) {
+
+            current = this.words.get(s);
+
+        } else {
+
+            current = new LetterInventory(s);
+
+        }
+
+        if (current.isEmpty() && (max == 0 || this.answers.size() == max)) {
 
             System.out.println(this.answers);
 
         } else {
 
-            for (String word : this.dictionary) {
+            for (String word : this.prunedDict) {
 
-                LetterInventory difference = current.subtract(new LetterInventory(word));
+                LetterInventory difference = current.subtract(this.words.get(word));
 
                 if (difference != null) {
 
-                    this.answers.add(word);
-                    explore(difference.toString(), num--);
-                    this.answers.remove(word);
+                    this.answers.push(word);
+
+                    if (max == 0 || this.answers.size() <= max) {
+
+                        explore(difference.toString(), max);
+
+                    }
+
+                    this.answers.pop();
 
                 }
 
