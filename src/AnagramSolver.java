@@ -35,7 +35,7 @@ public class AnagramSolver {
 
         for (String word : this.dictionary) {
 
-            this.words.put(word, new LetterInventory(word));
+            this.words.put(word.toLowerCase(), new LetterInventory(word));
 
         }
 
@@ -62,7 +62,7 @@ public class AnagramSolver {
 
             if (input.subtract(this.words.get(word)) != null) {
 
-                this.prunedDict.add(word.toLowerCase());
+                this.prunedDict.add(word);
 
             }
 
