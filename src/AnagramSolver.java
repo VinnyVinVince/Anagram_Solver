@@ -62,13 +62,13 @@ public class AnagramSolver {
 
             if (input.subtract(this.words.get(word)) != null) {
 
-                this.prunedDict.add(word);
+                this.prunedDict.add(word.toLowerCase());
 
             }
 
         }
 
-        explore(s, max);
+        explore(s.toLowerCase(), max);
 
         // Resetting temporary dictionary after method execution.
         this.prunedDict.clear();
